@@ -3,458 +3,667 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>⚗️ Gaz Laboratuvarı</title>
+  <title>⚗️ Gaz Laboratuvarı Pro</title>
   
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="mobile-web-app-capable" content="yes">
   
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap">
+  
   <style>
     :root {
       --primary: #6366f1;
       --bg: #f0f4f8;
-      --card-bg: #white;
-      --text: #1e293b;
-      --text-muted: #94a3b8;
       --border: #e2e8f0;
+      --text: #1e293b;
     }
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body {
       margin: 0; padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: 'Inter', system-ui, sans-serif;
       background-color: var(--bg); color: var(--text);
     }
-    .header {
+    .navbar {
       background: white; border-bottom: 1px solid var(--border);
-      padding: 10px 14px; position: sticky; top: 0; z-index: 100;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+      padding: 8px 14px; position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
     }
-    .header-container {
+    .nav-container {
       max-width: 1000px; margin: 0 auto;
-      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px;
     }
-    .brand h1 { margin: 0; fontSize: 16px; fontWeight: 800; }
-    .brand p { margin: 0; fontSize: 10px; color: var(--text-muted); }
+    .brand h1 { margin: 0; font-size: 15px; font-weight: 800; }
+    .brand p { margin: 0; font-size: 9px; color: #94a3b8; }
     
     .tabs {
       display: flex; gap: 2px; background: #f8fafc;
       border: 1px solid var(--border); padding: 3px; border-radius: 10px;
+      overflow-x: auto; max-width: 100%;
     }
     .tab-btn {
       padding: 6px 10px; border: none; background: transparent;
-      color: var(--text-muted); font-weight: 600; fontSize: 11px;
-      border-radius: 7px; cursor: pointer; transition: all 0.2s;
+      color: #94a3b8; font-weight: 600; font-size: 11px;
+      border-radius: 7px; cursor: pointer; white-space: nowrap;
     }
     .tab-btn.active {
       background: white; color: var(--primary); box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
     
-    .main-content { max-width: 1000px; margin: 0 auto; padding: 12px; }
+    .container { max-width: 1000px; margin: 0 auto; padding: 12px; }
     .panel { display: none; }
     .panel.active { display: block; }
     
-    .intro-card {
-      background: white; border-radius: 12px; padding: 12px;
-      margin-bottom: 10px; border: 1px solid var(--border);
+    .info-card {
+      background: white; border-radius: 12px; padding: 10px 14px;
+      margin-bottom: 8px; border: 1px solid var(--border);
     }
-    .intro-card h2 { margin: 0 0 4px 0; fontSize: 14px; fontWeight: 800; }
-    .intro-card p { margin: 0; fontSize: 11px; color: var(--text-muted); }
+    .info-card h2 { margin: 0 0 2px 0; font-size: 14px; font-weight: 800; }
+    .info-card p { margin: 0; font-size: 11px; color: #94a3b8; }
     
-    .controls-row {
-      background: white; border-radius: 10px; padding: 10px;
-      margin-bottom: 10px; border: 1px solid var(--border);
-      display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+    .bar-controls {
+      background: white; border-radius: 10px; padding: 8px 12px;
+      margin-bottom: 8px; border: 1px solid var(--border);
+      display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
     }
     
-    .svg-container {
+    .svg-holder {
       background: white; border-radius: 16px; border: 1px solid var(--border);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 10px; overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06); margin-bottom: 8px; overflow: hidden;
     }
-    svg { display: block; width: 100%; height: auto; }
     
-    .slider-group { margin-bottom: 10px; }
-    .slider-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; }
-    .slider-label { fontSize: 11px; color: #64748b; font-weight: 600; }
-    .slider-val-box { display: flex; align-items: center; gap: 4px; }
-    .num-input {
-      width: 65px; padding: 3px; border-radius: 6px; border: 1px solid var(--primary);
-      background: #f8fafc; color: var(--primary); fontSize: 11px; font-weight: 700; text-align: right;
-    }
-    .slider-unit { fontSize: 10px; color: var(--text-muted); width: 22px; }
-    input[type="range"] { width: 100%; accent-color: var(--primary); cursor: pointer; }
-    
-    .grid-cards { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+    .grid { display: flex; gap: 8px; flex-wrap: wrap; }
     .card {
       flex: 1 1 180px; background: white; border-radius: 12px;
-      padding: 12px; border: 1px solid var(--border); box-shadow: 0 1px 4px rgba(0,0,0,0.02);
+      padding: 12px; border: 1px solid var(--border);
     }
-    .card-title { font-weight: 800; fontSize: 13px; margin-bottom: 8px; display: flex; justify-content: space-between; }
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .card-title { font-weight: 800; font-size: 12px; }
     
-    .btn-action {
-      padding: 4px 10px; border-radius: 6px; border: none; font-weight: 700;
-      fontSize: 11px; cursor: pointer; background: #f1f5f9; color: #64748b;
+    .slider-item { margin-bottom: 8px; }
+    .slider-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; }
+    .slider-lbl { font-size: 10px; color: #64748b; font-weight: 600; }
+    .slider-val-wrap { display: flex; align-items: center; gap: 4px; }
+    .input-num {
+      width: 55px; padding: 2px; border-radius: 6px; border: 1px solid var(--primary);
+      background: #f8fafc; color: var(--primary); font-size: 11px; font-weight: 700; text-align: right; outline: none;
     }
-    .btn-action.active { background: #dcfce7; color: #15803d; outline: 1.5px solid #22c55e; }
+    .slider-unit { font-size: 9px; color: #cbd5e1; width: 20px; }
+    input[type="range"] { width: 100%; accent-color: var(--primary); cursor: pointer; margin: 2px 0; }
     
-    .law-table { width: 100%; border-collapse: collapse; fontSize: 11px; margin-top: 8px; }
-    .law-table th { color: var(--text-muted); text-align: left; padding: 4px; border-bottom: 1px solid #f1f5f9; }
-    .law-table td { padding: 6px 4px; border-bottom: 1px solid #f8fafc; }
+    .btn-toggle {
+      padding: 4px 10px; border-radius: 15px; border: none; font-weight: 700;
+      font-size: 11px; cursor: pointer; background: #f1f5f9; color: #94a3b8;
+    }
+    .btn-toggle.active { background: var(--primary); color: white; }
+    .btn-valve {
+      padding: 5px 12px; border-radius: 20px; border: none; font-weight: 700;
+      font-size: 11px; cursor: pointer; background: #fee2e2; color: #dc2626; outline: 2px solid #ef4444;
+    }
+    .btn-valve.open { background: #dcfce7; color: #15803d; outline: 2px solid #22c55e; }
+    
+    .gas-badge-row { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 3px; }
+    .gas-badge {
+      padding: 2px 6px; font-size: 9px; font-weight: 700; border-radius: 10px;
+      border: 1px solid #e2e8f0; background: white; color: #cbd5e1; cursor: pointer;
+    }
+    .gas-badge.active { background: var(--bg); border-color: currentColor; }
+    
+    .edu-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+    .edu-table th { color: #94a3b8; font-weight: 600; text-align: left; padding: 4px; border-bottom: 1px solid #f1f5f9; }
+    .edu-table td { padding: 6px 4px; border-bottom: 1px solid #f8fafc; }
   </style>
 </head>
 <body>
 
-  <div class="header">
-    <div class="header-container">
+  <div class="navbar">
+    <div class="nav-container">
       <div class="brand">
         <h1>⚗️ Gaz Laboratuvarı</h1>
-        <p>PV=nRT · Mobil Optimize Simülasyon</p>
+        <p>PV=nRT · 4 Düzenek Tam Versiyon</p>
       </div>
       <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('d1')">🧪 Düzenek 1</button>
-        <button class="tab-btn" onclick="switchTab('d3')">🚧 Düzenek 3</button>
-        <button class="tab-btn" onclick="switchTab('edu')">🎓 Eğitim</button>
+        <button class="tab-btn active" onclick="setTab('d1')">🧪 Düzenek 1</button>
+        <button class="tab-btn" onclick="setTab('d2')">🔗 Düzenek 2</button>
+        <button class="tab-btn" onclick="setTab('d3')">🚧 Düzenek 3</button>
+        <button class="tab-btn" onclick="setTab('d4')">🫧 Düzenek 4</button>
+        <button class="tab-btn" onclick="setTab('edu')">🎓 Eğitim</button>
       </div>
     </div>
   </div>
 
-  <div class="main-content">
+  <div class="container">
     
-    <!-- DÜZENEK 1 PANEL -->
-    <div id="panel-d1" class="panel active">
-      <div class="intro-card">
-        <h2>🧪 Düzenek 1 — Yatay Hareketli Piston</h2>
-        <p>Bölmeler arası pistonlar serbestçe hareket eder. Her bölmenin basıncı (P) daima birbirine eşittir.</p>
+    <div id="p-d1" class="panel active">
+      <div class="info-card">
+        <h2>🧪 Düzenek 1 — Yatay Silindir ve Hareketli Pistonlar</h2>
+        <p>Toplam hacim sabittir. Bölmeler arası ideal pistonlar basınçları eşitleyene kadar otomatik hareket eder.</p>
       </div>
-      
-      <div class="controls-row">
-        <div style="display:flex; gap:4px; align-items:center;">
-          <span style="fontSize:11px; font-weight:700; color:#64748b;">BÖLME SAYISI:</span>
-          <button class="btn-action active" id="btn-n2" onclick="changeD1Chambers(2)" style="border-radius:15px; width:26px; height:26px; padding:0;">2</button>
-          <button class="btn-action" id="btn-n3" onclick="changeD1Chambers(3)" style="border-radius:15px; width:26px; height:26px; padding:0;">3</button>
+      <div class="bar-controls">
+        <span style="font-size:11px; font-weight:700; color:#64748b;">BÖLME:</span>
+        <button class="btn-toggle active" id="d1-b2" onclick="setD1Chambers(2)">2</button>
+        <button class="btn-toggle" id="d1-b3" onclick="setD1Chambers(3)">3</button>
+        <button class="btn-toggle" id="d1-b4" onclick="setD1Chambers(4)">4</button>
+        <div style="flex:1; min-width:140px; margin: 0 10px;">
+          <input type="range" id="d1-vtot" min="4" max="24" step="0.5" value="12" oninput="calcD1()">
         </div>
-        <div style="flex:1; min-width:160px; margin-left:10px;">
-          <div class="slider-header"><span class="slider-label">Toplam Hacim (V_toplam)</span></div>
-          <input type="range" id="d1-vtotal" min="4" max="24" step="0.5" value="12" oninput="updateD1()">
-        </div>
-        <div style="background:#f8fafc; padding:6px 12px; border-radius:8px; border:1px solid var(--border); font-weight:800; color:var(--primary);">
-          Sistem P = <span id="d1-res-p">0.000</span> atm
+        <div style="background:#f8fafc; padding:4px 10px; border-radius:8px; border:1px solid #e2e8f0; font-weight:800; color:#6366f1; font-size:12px;">
+          P = <span id="d1-p-val">0.000</span> atm
         </div>
       </div>
-
-      <div class="svg-container">
-        <svg viewBox="0 0 800 220" id="svg-d1"></svg>
-      </div>
-
-      <div class="grid-cards" id="d1-cards-container"></div>
+      <div class="svg-holder"><svg viewBox="0 0 960 340" id="svg-d1"></svg></div>
+      <div class="grid" id="d1-cards"></div>
     </div>
 
-    <!-- DÜZENEK 3 PANEL -->
-    <div id="panel-d3" class="panel">
-      <div class="intro-card">
-        <h2>🚧 Düzenek 3 — Sabit Engelli Piston</h2>
-        <p>Gaz hacmi engele ulaşana kadar basınç sabit kalır (İzobar). Engele çarpınca hacim sabitlenir, basınç yükselir (İzokor).</p>
+    <div id="p-d2" class="panel">
+      <div class="info-card">
+        <h2>🔗 Düzenek 2 — Çoklu Kaplar ve İdeal Piston Değerleri</h2>
+        <p>Musluklar açıldığında gazlar karışır. 4. Kap ideal pistonlu olup dış basınç (P₀) ile dengelenir.</p>
       </div>
-
-      <div class="svg-container">
-        <svg viewBox="0 0 800 220" id="svg-d3"></svg>
+      <div class="bar-controls">
+        <span style="font-size:11px; font-weight:700; color:#6366f1;">P₀ (Dış Basınç):</span>
+        <input type="range" id="d2-p0" min="0.5" max="2.5" step="0.05" value="1.00" style="flex:1; max-width:200px;" oninput="calcD2()">
+        <span id="d2-p0-lbl" style="font-size:12px; font-weight:700; color:#6366f1; min-width:50px;">1.00 atm</span>
+        <button class="btn-valve" id="d2-m1" onclick="toggleD2Valve('m1')">M1</button>
+        <button class="btn-valve" id="d2-m2" onclick="toggleD2Valve('m2')">M2</button>
+        <button class="btn-valve" id="d2-m3" onclick="toggleD2Valve('m3')">M3</button>
+        <button class="btn-valve" id="d2-m4" onclick="toggleD2Valve('m4')">M4</button>
+        <button class="btn-toggle" onclick="resetD2()" style="background:white; border:1px solid #e2e8f0; color:#64748b;">↺ Sıfırla</button>
       </div>
-
-      <div class="grid-cards">
-        <div class="card" style="flex:1 1 100%;">
-          <div class="card-title" style="color:var(--primary);">🔬 Düzenek Kontrolleri</div>
-          <div style="display:flex; gap:16px; flex-wrap:wrap;">
-            <div style="flex:1; min-width:200px;">
-              <div class="slider-group">
-                <div class="slider-header"><span class="slider-label">Gaz Miktarı (n)</span><div class="slider-val-box"><input type="number" id="num-d3-n" class="num-input" value="0.50" step="0.05" onchange="syncD3('n', this.value)"><span class="slider-unit">mol</span></div></div>
-                <input type="range" id="d3-n" min="0.1" max="2.0" step="0.05" value="0.5" oninput="syncD3('n', this.value)">
-              </div>
-              <div class="slider-group">
-                <div class="slider-header"><span class="slider-label">Sıcaklık (T)</span><div class="slider-val-box"><input type="number" id="num-d3-t" class="num-input" value="300" step="10" onchange="syncD3('t', this.value)"><span class="slider-unit">K</span></div></div>
-                <input type="range" id="d3-t" min="100" max="800" step="10" value="300" oninput="syncD3('t', this.value)">
-              </div>
-            </div>
-            <div style="flex:1; min-width:200px;">
-              <div class="slider-group">
-                <div class="slider-header"><span class="slider-label">Dış Basınç (P_ortam)</span><div class="slider-val-box"><input type="number" id="num-d3-p0" class="num-input" value="1.00" step="0.1" onchange="syncD3('p0', this.value)"><span class="slider-unit">atm</span></div></div>
-                <input type="range" id="d3-p0" min="0.5" max="2.5" step="0.1" value="1.0" oninput="syncD3('p0', this.value)">
-              </div>
-              <div class="slider-group">
-                <div class="slider-header"><span class="slider-label">Engel Konumu (V_engel)</span><div class="slider-val-box"><input type="number" id="num-d3-e" class="num-input" value="6.0" step="0.5" onchange="syncD3('e', this.value)"><span class="slider-unit">L</span></div></div>
-                <input type="range" id="d3-e" min="3.0" max="10.0" step="0.5" value="6.0" oninput="syncD3('e', this.value)">
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <div class="svg-holder"><svg viewBox="0 0 560 400" id="svg-d2"></svg></div>
+      <div class="grid" id="d2-cards"></div>
     </div>
 
-    <!-- EĞİTİM PANEL -->
-    <div id="panel-edu" class="panel">
-      <div class="intro-card">
-        <h2>🎓 Temel Gaz Yasaları Tablosu</h2>
-        <p>PV=nRT ideal gaz denkleminden türetilen ve müfredatta yer alan temel deneysel yasalar.</p>
+    <div id="p-d3" class="panel">
+      <div class="info-card">
+        <h2>🚧 Düzenek 3 — Pistonlu ve Engelli Silindir</h2>
+        <p>Gaz hacmi engele kadar genişler (İzobar). Engele dayandığı anda hacim sabit kalır ve basınç artar (İzokor).</p>
       </div>
-      <div id="edu-container"></div>
+      <div class="svg-holder"><svg viewBox="0 0 900 280" id="svg-d3"></svg></div>
+      <div class="grid" id="d3-cards"></div>
+    </div>
+
+    <div id="p-d4" class="panel">
+      <div class="info-card">
+        <h2>🫧 Düzenek 4 — Elastik Balon Sistemi</h2>
+        <p>Üç farklı esnek balon borularla bağlıdır. Musluklar açıldığında tüm balonların iç basınçları eşitlenir.</p>
+      </div>
+      <div class="bar-controls">
+        <button class="btn-valve" id="d4-m1" onclick="toggleD4Valve('m1')">M1 (1-2)</button>
+        <button class="btn-valve" id="d4-m2" onclick="toggleD4Valve('m2')">M2 (2-3)</button>
+        <button class="btn-valve" id="d4-m3" onclick="toggleD4Valve('m3')">M3 (1-3)</button>
+        <button class="btn-toggle" onclick="resetD4()" style="background:white; border:1px solid #e2e8f0; color:#64748b; margin-left:auto;">↺ Sıfırla</button>
+      </div>
+      <div class="svg-holder"><svg viewBox="0 0 520 380" id="svg-d4"></svg></div>
+      <div class="grid" id="d4-cards"></div>
+    </div>
+
+    <div id="p-edu" class="panel">
+      <div class="info-card">
+        <h2>🎓 Kimya Kazanımları ve Gaz Yasaları</h2>
+        <p>Müfredata uygun gaz denklemleri ve yasa simülasyon özetleri.</p>
+      </div>
+      <div class="grid" id="edu-content" style="flex-direction: column;"></div>
     </div>
 
   </div>
 
   <script>
     const R = 0.0821;
-    let currentTab = 'd1';
+    let activeTab = 'd1';
+    let tick = 0;
 
-    // State Düzenek 1
-    let d1ChambersCount = 2;
-    let d1Data = [
-      { name: 'A Gazı', n: 0.4, T: 300, color: '#3b82f6', pColor: '#1d4ed8' },
-      { name: 'B Gazı', n: 0.6, T: 300, color: '#ef4444', pColor: '#b91c1c' },
-      { name: 'C Gazı', n: 0.5, T: 300, color: '#10b981', pColor: '#047857' },
+    // Renk Altyapısı
+    const C_COLORS = [
+      { fill:"#dbeafe", stroke:"#93c5fd", particle:"#1d4ed8" },
+      { fill:"#dcfce7", stroke:"#86efac", particle:"#15803d" },
+      { fill:"#fef9c3", stroke:"#fde047", particle:"#a16207" },
+      { fill:"#fce7f3", stroke:"#f9a8d4", particle:"#be185d" }
+    ];
+    const G_PRESETS = [
+      { label:"He", color:"#a78bfa", bg:"#ede9fe" },
+      { label:"H₂", color:"#eab308", bg:"#fefce8" },
+      { label:"N₂", color:"#34d399", bg:"#d1fae5" },
+      { label:"O₂", color:"#fb923c", bg:"#ffedd5" },
+      { label:"CH₄",color:"#6366f1", bg:"#eef2ff" },
+      { label:"SO₃",color:"#f87171", bg:"#fee2e2" },
+      { label:"CO₂",color:"#94a3b8", bg:"#f1f5f9" }
     ];
 
-    // State Düzenek 3
-    let d3Data = { n: 0.5, T: 300, p0: 1.0, engel: 6.0 };
+    // --- DATA STATE MODELLERİ ---
+    let d1Count = 3;
+    let d1Chambers = [
+      { gas:"He", n:0.4, T:300, V:4 },
+      { gas:"Ne", n:0.4, T:300, V:4 },
+      { gas:"Ar", n:0.4, T:300, V:4 },
+      { gas:"CH₄",n:0.4, T:300, V:4 }
+    ];
 
-    // Animasyon saniyeleri
-    let animTick = 0;
+    let d2Valves = { m1:false, m2:false, m3:false, m4:false };
+    let d2InitData = [
+      { gas:"CH₄", n:0.24, V:5.0, T:300 },
+      { gas:"He",  n:0.05, V:2.0, T:300 },
+      { gas:"H₂",  n:0.19, V:3.0, T:300 },
+      { gas:"Ne",  n:0.16, V:4.0, T:300 }
+    ];
+    let d2Caps = JSON.parse(JSON.stringify(d2InitData));
+
+    let d3Data = { n:0.5, T:300, p0:1.0, engel:6.0, mOpen:false, addN:0.1 };
+
+    let d4Valves = { m1:false, m2:false, m3:false };
+    let d4InitData = [
+      { gas:"Ne",  n:0.16, V:2.0, T:300 },
+      { gas:"Boş", n:0.00, V:2.0, T:300 },
+      { gas:"SO₃", n:0.24, V:1.0, T:300 }
+    ];
+    let d4Caps = JSON.parse(JSON.stringify(d4InitData));
+
+    // Animasyon Döngüsü
     setInterval(() => {
-      animTick++;
-      if (currentTab === 'd1') drawD1SVG();
-      if (currentTab === 'd3') drawD3SVG();
-    }, 40);
+      tick++;
+      if(activeTab === 'd1') drawD1();
+      if(activeTab === 'd2') drawD2();
+      if(activeTab === 'd3') drawD3();
+      if(activeTab === 'd4') drawD4();
+    }, 50);
 
-    function switchTab(tabId) {
-      currentTab = tabId;
+    function setTab(t) {
+      activeTab = t;
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-      
       event.target.classList.add('active');
-      document.getElementById('panel-' + tabId).classList.add('active');
+      document.getElementById('p-' + t).classList.add('active');
       
-      if(tabId === 'd1') updateD1();
-      if(tabId === 'd3') updateD3();
-      if(tabId === 'edu') renderEducation();
+      if(t==='d1') { buildD1Cards(); calcD1(); }
+      if(t==='d2') { buildD2Cards(); calcD2(); }
+      if(t==='d3') { buildD3Cards(); calcD3(); }
+      if(t==='d4') { buildD4Cards(); calcD4(); }
+      if(t==='edu') drawEdu();
     }
 
-    // ══════════════════════════════════════════════════════════════
-    // DÜZENEK 1 LOGIC
-    // ══════════════════════════════════════════════════════════════
-    function changeD1Chambers(count) {
-      d1ChambersCount = count;
-      document.getElementById('btn-n2').classList.toggle('active', count === 2);
-      document.getElementById('btn-n3').classList.toggle('active', count === 3);
+    // ══════════════════════ DÜZENEK 1 ══════════════════════
+    function setD1Chambers(n) {
+      d1Count = n;
+      for(let i=2; i<=4; i++) document.getElementById('d1-b'+i).classList.toggle('active', i===n);
       buildD1Cards();
-      updateD1();
+      calcD1();
     }
-
     function buildD1Cards() {
-      const container = document.getElementById('d1-cards-container');
-      container.innerHTML = '';
-      for (let i = 0; i < d1ChambersCount; i++) {
-        const c = d1Data[i];
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.style.borderTop = `4px solid ${c.color}`;
-        card.innerHTML = `
-          <div class="card-title" style="color:${c.pColor}">${i+1}. Bölme (${c.name})</div>
-          <div class="slider-group">
-            <div class="slider-header"><span class="slider-label">Mol (n)</span><div class="slider-val-box"><input type="number" id="num-d1-n-${i}" class="num-input" value="${c.n}" step="0.05" onchange="syncD1(${i}, 'n', this.value)"><span class="slider-unit">mol</span></div></div>
-            <input type="range" id="rng-d1-n-${i}" min="0.1" max="2.0" step="0.05" value="${c.n}" oninput="syncD1(${i}, 'n', this.value)">
+      let html = '';
+      for(let i=0; i<d1Count; i++) {
+        let c = d1Chambers[i];
+        html += `<div class="card" style="border-top: 4px solid ${C_COLORS[i].stroke}">
+          <div class="card-header"><span class="card-title" style="color:${C_COLORS[i].particle}">${i+1}. Bölme</span></div>
+          <div class="slider-item">
+            <div class="slider-meta"><span class="slider-lbl">Miktar (n)</span><div class="slider-val-wrap"><input type="number" step="0.05" class="input-num" value="${c.n}" onchange="syncD1(${i},'n',this.value)"> <span class="slider-unit">mol</span></div></div>
+            <input type="range" min="0.1" max="3" step="0.05" value="${c.n}" oninput="syncD1(${i},'n',this.value)">
           </div>
-          <div class="slider-group">
-            <div class="slider-header"><span class="slider-label">Sıcaklık (T)</span><div class="slider-val-box"><input type="number" id="num-d1-t-${i}" class="num-input" value="${c.T}" step="10" onchange="syncD1(${i}, 't', this.value)"><span class="slider-unit">K</span></div></div>
-            <input type="range" id="rng-d1-t-${i}" min="100" max="600" step="10" value="${c.T}" oninput="syncD1(${i}, 't', this.value)">
+          <div class="slider-item">
+            <div class="slider-meta"><span class="slider-lbl">Sıcaklık (T)</span><div class="slider-val-wrap"><input type="number" step="10" class="input-num" value="${c.T}" onchange="syncD1(${i},'T',this.value)"> <span class="slider-unit">K</span></div></div>
+            <input type="range" min="100" max="900" step="10" value="${c.T}" oninput="syncD1(${i},'T',this.value)">
           </div>
-        `;
-        container.appendChild(card);
+        </div>`;
       }
+      document.getElementById('d1-cards').innerHTML = html;
     }
-
-    function syncD1(idx, field, val) {
-      let num = parseFloat(val);
-      if (isNaN(num)) return;
-      if (field === 'n') d1Data[idx].n = Math.max(0.1, Math.min(2, num));
-      if (field === 't') d1Data[idx].T = Math.max(100, Math.min(600, num));
-      
-      document.getElementById(`num-d1-${field}-${idx}`).value = num;
-      document.getElementById(`rng-d1-${field}-${idx}`).value = num;
-      updateD1();
+    function syncD1(i, f, v) {
+      d1Chambers[i][f] = parseFloat(v);
+      buildD1Cards();
+      calcD1();
     }
-
-    function updateD1() {
+    function calcD1() {
+      let vTot = parseFloat(document.getElementById('d1-vtot').value);
       let sumNT = 0;
-      for(let i=0; i<d1ChambersCount; i++) {
-        sumNT += d1Data[i].n * d1Data[i].T;
+      for(let i=0; i<d1Count; i++) sumNT += d1Chambers[i].n * d1Chambers[i].T;
+      let P = (sumNT * R) / vTot;
+      document.getElementById('d1-p-val').innerText = P.toFixed(3);
+      for(let i=0; i<d1Count; i++) {
+        d1Chambers[i].V = ((d1Chambers[i].n * d1Chambers[i].T) / sumNT) * vTot;
       }
-      let Vtotal = parseFloat(document.getElementById('d1-vtotal').value);
-      let P = (sumNT * R) / Vtotal;
-      document.getElementById('d1-res-p').innerText = P.toFixed(3);
-
-      for(let i=0; i<d1ChambersCount; i++) {
-        d1Data[i].V = ((d1Data[i].n * d1Data[i].T) / sumNT) * Vtotal;
+    }
+    function drawD1() {
+      let svg = document.getElementById('svg-d1');
+      if(!svg) return;
+      let vTot = parseFloat(document.getElementById('d1-vtot').value);
+      let P = parseFloat(document.getElementById('d1-p-val').innerText);
+      let html = `<rect x="90" y="55" width="780" height="210" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>`;
+      let curX = 90;
+      for(let i=0; i<d1Count; i++) {
+        let c = d1Chambers[i];
+        let w = (c.V / vTot) * 780;
+        let col = C_COLORS[i];
+        html += `<rect x="${curX}" y="55" width="${w}" height="210" fill="${col.fill}" opacity="0.6"/>`;
+        let pCount = Math.min(22, Math.round(c.n * 10));
+        for(let p=0; p<pCount; p++) {
+          let seed = p * 143.1 + i * 500 + tick * (0.15 + (c.T/300)*0.3);
+          let px = curX + 15 + ((Math.sin(seed) * 0.5 + 0.5) * (w - 30));
+          let py = 55 + 15 + ((Math.cos(seed * 0.8) * 0.5 + 0.5) * 180);
+          html += `<circle cx="${px}" cy="${py}" r="5" fill="${col.particle}" opacity="0.7"/>`;
+        }
+        let midX = curX + w/2;
+        html += `<text x="${midX}" y="110" text-anchor="middle" fill="${col.particle}" font-weight="900" font-size="20">${c.gas || 'X'}</text>
+                 <text x="${midX}" y="140" text-anchor="middle" fill="#475569" font-size="13" font-weight="700">${c.V.toFixed(2)} L</text>
+                 <text x="${midX}" y="165" text-anchor="middle" fill="#64748b" font-size="11">${c.n.toFixed(2)} mol / ${c.T} K</text>`;
+        curX += w;
+        if(i < d1Count - 1) {
+          html += `<g><rect x="${curX-6}" y="45" width="12" height="230" fill="url(#pistonGrad)" stroke="#334155" rx="3"/>
+                   <circle cx="${curX}" cy="160" r="4" fill="white"/></g>`;
+        }
       }
-      drawD1SVG();
+      svg.innerHTML = `<defs><linearGradient id="pistonGrad"><stop offset="0%" stop-color="#475569"/><stop offset="50%" stop-color="#94a3b8"/><stop offset="100%" stop-color="#334155"/></linearGradient></defs>` + html;
     }
 
-    function drawD1SVG() {
-      const svg = document.getElementById('svg-d1');
-      if (!svg || currentTab !== 'd1') return;
-      
-      let Vtotal = parseFloat(document.getElementById('d1-vtotal').value);
-      let sumV = 0;
-      let html = `<rect x="50" y="40" width="700" height="120" fill="#f8fafc" stroke="#94a3b8" stroke-width="3" rx="4"/>`;
-      
-      let currentX = 50;
-      for(let i=0; i<d1ChambersCount; i++) {
-        let c = d1Data[i];
-        let width = (c.V / Vtotal) * 700;
-        
-        // Gaz Arka Plan Rengi
-        html += `<rect x="${currentX}" y="40" width="${width}" height="120" fill="${c.color}" opacity="0.08"/>`;
-        
-        // Tanecikler
-        let pCount = Math.min(25, Math.round(c.n * 12));
-        for(let p=0; p<pCount; p++) {
-          let speed = 0.1 + (c.T / 300) * 0.4;
-          let seed = p * 15 + i * 120 + animTick * speed;
-          let px = currentX + 10 + ((Math.sin(seed) * 0.5 + 0.5) * (width - 20));
-          let py = 40 + 10 + ((Math.cos(seed * 0.7) * 0.5 + 0.5) * 100);
-          html += `<circle cx="${px}" cy="${py}" r="4" fill="${c.color}" opacity="0.7"/>`;
-        }
-        
-        // Yazılar
-        let midX = currentX + width / 2;
-        html += `
-          <text x="${midX}" y="75" text-anchor="middle" fill="${c.pColor}" font-weight="800" font-size="14">${c.name}</text>
-          <text x="${midX}" y="95" text-anchor="middle" fill="#475569" font-size="11" font-weight="600">${c.V.toFixed(2)} L</text>
-          <text x="${midX}" y="112" text-anchor="middle" fill="#64748b" font-size="10">${c.n.toFixed(2)} mol / ${c.T} K</text>
-        `;
-        
-        currentX += width;
-        if (i < d1ChambersCount - 1) {
-          // İdeal Piston Çizgisi
-          html += `
-            <rect x="${currentX - 4}" y="36" width="8" height="128" fill="#475569" rx="2"/>
-            <circle cx="${currentX}" cy="100" r="3" fill="white"/>
-          `;
-        }
+    // ══════════════════════ DÜZENEK 2 ══════════════════════
+    function toggleD2Valve(v) {
+      d2Valves[v] = !d2Valves[v];
+      document.getElementById('d2-'+v).classList.toggle('open', d2Valves[v]);
+      calcD2();
+    }
+    function resetD2() {
+      d2Caps = JSON.parse(JSON.stringify(d2InitData));
+      d2Valves = { m1:false, m2:false, m3:false, m4:false };
+      document.querySelectorAll('#p-d2 .btn-valve').forEach(b=>b.classList.remove('open'));
+      calcD2();
+    }
+    function buildD2Cards() {
+      let html = '';
+      for(let i=0; i<4; i++) {
+        let c = d2Caps[i];
+        let isP = i===3;
+        html += `<div class="card">
+          <div class="card-header"><span class="card-title">${i+1}. Kap ${isP?'(Pistonlu)':''}</span></div>
+          <div class="slider-item">
+            <div class="slider-meta"><span class="slider-lbl">Miktar (n)</span><div class="slider-val-wrap"><input type="number" step="0.01" class="input-num" value="${c.n.toFixed(2)}" onchange="syncD2(${i},'n',this.value)"> <span class="slider-unit">mol</span></div></div>
+            <input type="range" min="0" max="2" step="0.01" value="${c.n}" oninput="syncD2(${i},'n',this.value)">
+          </div>
+          <div class="slider-item">
+            <div class="slider-meta"><span class="slider-lbl">Hacim (V)</span><div class="slider-val-wrap"><input type="number" step="0.1" class="input-num" value="${c.V.toFixed(1)}" ${isP?'disabled':''} onchange="syncD2(${i},'V',this.value)"> <span class="slider-unit">L</span></div></div>
+            <input type="range" min="1" max="12" step="0.1" value="${c.V}" ${isP?'disabled':''} oninput="syncD2(${i},'V',this.value)">
+          </div>
+        </div>`;
       }
+      document.getElementById('d2-cards').innerHTML = html;
+    }
+    function syncD2(i, f, v) {
+      d2Caps[i][f] = parseFloat(v);
+      calcD2();
+    }
+    function calcD2() {
+      let P0 = parseFloat(document.getElementById('d2-p0').value);
+      document.getElementById('d2-p0-lbl').innerText = P0.toFixed(2) + " atm";
+      
+      let par = [0,1,2,3];
+      function find(x) { return par[x]===x ? x : par[x]=find(par[x]); }
+      function union(a,b) { par[find(a)] = find(b); }
+      
+      if(d2Valves.m1) union(0,2);
+      if(d2Valves.m2) union(1,2);
+      if(d2Valves.m3) union(0,1);
+      if(d2Valves.m4) union(2,3);
+      
+      let groups = {};
+      for(let i=0; i<4; i++) {
+        let r = find(i);
+        if(!groups[r]) groups[r] = { n:0, sumVT:0, idx:[], hasPiston:false };
+        groups[r].n += d2Caps[i].n;
+        if(i<3) groups[r].sumVT += d2Caps[i].V / d2Caps[i].T;
+        if(i===3) groups[r].hasPiston = true;
+        groups[r].idx.push(i);
+      }
+      
+      Object.values(groups).forEach(g => {
+        if(g.idx.length < 2) return;
+        let gNames = g.idx.map(i=>d2InitData[i].gas).filter(n=>d2Caps[g.idx[0]].n>0);
+        let sharedGas = gNames.length===0?"Boş":gNames.every(n=>n===gNames[0])?gNames[0]:"Karışım";
+        
+        if(g.hasPiston) {
+          let mFixed = 0;
+          g.idx.forEach(i => {
+            if(i===3) return;
+            let nm = (P0 * d2Caps[i].V) / (R * d2Caps[i].T);
+            d2Caps[i].gas = sharedGas;
+            mFixed += nm;
+          });
+          let mP = Math.max(0, g.n - mFixed);
+          d2Caps[3].V = mP > 0 ? (mP * R * d2Caps[3].T) / P0 : 0.2;
+          d2Caps[3].gas = sharedGas;
+        } else {
+          let Peq = (g.n * R) / g.sumVT;
+          g.idx.forEach(i => { d2Caps[i].gas = sharedGas; });
+        }
+      });
+      buildD2Cards();
+    }
+    function drawD2() {
+      let svg = document.getElementById('svg-d2');
+      if(!svg) return;
+      let P0 = parseFloat(document.getElementById('d2-p0').value);
+      let html = '';
+      let B_POS = [{cx:80,cy:115},{cx:80,cy:270},{cx:210,cy:193}];
+      
+      // Musluk Çizimleri
+      function drawV(x,y,open,lbl) {
+        return `<circle cx="${x}" cy="${y}" r="12" fill="${open?'#dcfce7':'#fee2e2'}" stroke="${open?'#22c55e':'#ef4444'}" stroke-width="2"/>
+                <text x="${x}" y="${y+3}" text-anchor="middle" font-size="9" font-weight="900" fill="${open?'#15803d':'#b91c1c'}">${lbl}</text>`;
+      }
+      
+      // Borular ve Kaplar
+      html += `<line x1="80" y1="115" x2="210" y2="193" stroke="#cbd5e1" stroke-width="4"/>`;
+      html += `<line x1="80" y1="270" x2="210" y2="193" stroke="#cbd5e1" stroke-width="4"/>`;
+      html += `<line x1="80" y1="115" x2="80" y2="270" stroke="#cbd5e1" stroke-width="4"/>`;
+      html += `<line x1="210" y1="193" x2="310" y2="190" stroke="#cbd5e1" stroke-width="4"/>`;
+      
+      // Balon Kaplar 1, 2, 3
+      for(let i=0; i<3; i++) {
+        let c = d2Caps[i];
+        let P = (c.n*R*c.T)/c.V;
+        let r = 35 + (c.V/12)*30;
+        let pObj = G_PRESETS.find(g=>g.label===c.gas) || {color:"#94a3b8",bg:"#f1f5f9"};
+        html += `<circle cx="${B_POS[i].cx}" cy="${B_POS[i].cy}" r="${r}" fill="${pObj.bg}" stroke="${pObj.color}" stroke-width="2"/>
+                 <text x="${B_POS[i].cx}" y="${B_POS[i].cy-5}" text-anchor="middle" font-weight="800" font-size="11" fill="${pObj.color}">${c.gas}</text>
+                 <text x="${B_POS[i].cx}" y="${B_POS[i].cy+8}" text-anchor="middle" font-size="9" fill="#475569">${P.toFixed(2)} atm</text>`;
+      }
+      
+      // 4. Pistonlu Kap
+      let pc = d2Caps[3];
+      let pX = 310 + (pc.V/12)*220;
+      let pObj4 = G_PRESETS.find(g=>g.label===pc.gas) || {color:"#94a3b8",bg:"#f1f5f9"};
+      html += `<rect x="310" y="140" width="220" height="100" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>`;
+      html += `<rect x="310" y="142" width="${pX-310}" height="96" fill="${pObj4.bg}"/>`;
+      html += `<rect x="${pX-6}" y="135" width="12" height="110" fill="#475569" rx="2"/>`;
+      html += `<text x="${310+(pX-310)/2}" y="185" text-anchor="middle" font-size="11" font-weight="800" fill="${pObj4.color}">${pc.gas} (${pc.V.toFixed(1)}L)</text>`;
+      
+      // Musluk Görselleri Ekleme
+      html += drawV(145, 154, d2Valves.m1, "M1");
+      html += drawV(145, 231, d2Valves.m2, "M2");
+      html += drawV(80, 192, d2Valves.m3, "M3");
+      html += drawV(260, 191, d2Valves.m4, "M4");
+      
       svg.innerHTML = html;
     }
 
-    // ══════════════════════════════════════════════════════════════
-    // DÜZENEK 3 LOGIC
-    // ══════════════════════════════════════════════════════════════
-    function syncD3(field, val) {
-      let num = parseFloat(val);
-      if (isNaN(num)) return;
-      d3Data[field] = num;
-      
-      document.getElementById(`num-d3-${field}`).value = num;
-      document.getElementById(`d3-${field}`).value = num;
-      updateD3();
+    // ══════════════════════ DÜZENEK 3 ══════════════════════
+    function buildD3Cards() {
+      let html = `<div class="card" style="flex:1 1 100%;">
+        <div class="card-title">Parametreler</div>
+        <div class="grid">
+          <div class="slider-item" style="flex:1;">
+            <div class="slider-meta"><span class="slider-lbl">Gaz Ekle (n)</span><div class="slider-val-wrap"><input type="number" step="0.05" class="input-num" value="${d3Data.n}" onchange="syncD3('n',this.value)"></div></div>
+            <input type="range" min="0.1" max="2" step="0.05" value="${d3Data.n}" oninput="syncD3('n',this.value)">
+          </div>
+          <div class="slider-item" style="flex:1;">
+            <div class="slider-meta"><span class="slider-lbl">Sıcaklık (T)</span><div class="slider-val-wrap"><input type="number" step="10" class="input-num" value="${d3Data.T}" onchange="syncD3('T',this.value)"></div></div>
+            <input type="range" min="150" max="800" step="10" value="${d3Data.T}" oninput="syncD3('T',this.value)">
+          </div>
+          <div class="slider-item" style="flex:1;">
+            <div class="slider-meta"><span class="slider-lbl">Engel Konumu (L)</span><div class="slider-val-wrap"><input type="number" step="0.5" class="input-num" value="${d3Data.engel}" onchange="syncD3('engel',this.value)"></div></div>
+            <input type="range" min="3" max="10" step="0.5" value="${d3Data.engel}" oninput="syncD3('engel',this.value)">
+          </div>
+        </div>
+      </div>`;
+      document.getElementById('d3-cards').innerHTML = html;
     }
-
-    function updateD3() {
+    function syncD3(f, v) {
+      d3Data[f] = parseFloat(v);
+      calcD3();
+    }
+    function calcD3() {
       let V_ideal = (d3Data.n * R * d3Data.T) / d3Data.p0;
-      let isEngel = V_ideal >= d3Data.engel;
-      
-      if (isEngel) {
-        d3Data.currentV = d3Data.engel;
-        d3Data.currentP = (d3Data.n * R * d3Data.T) / d3Data.engel;
-        d3Data.durum = "🔴 İzokor Denge (Hacim Sabit)";
+      if(V_ideal >= d3Data.engel) {
+        d3Data.V = d3Data.engel;
+        d3Data.P = (d3Data.n * R * d3Data.T) / d3Data.engel;
+        d3Data.isIsochoric = true;
       } else {
-        d3Data.currentV = V_ideal;
-        d3Data.currentP = d3Data.p0;
-        d3Data.durum = "🟢 İzobar Denge (Basınç Sabit)";
+        d3Data.V = V_ideal;
+        d3Data.P = d3Data.p0;
+        d3Data.isIsochoric = false;
       }
-      drawD3SVG();
+      buildD3Cards();
     }
-
-    function drawD3SVG() {
-      const svg = document.getElementById('svg-d3');
-      if (!svg || currentTab !== 'd3') return;
-      
-      let scale = 550 / 12; // 12 Litre maksimum genişlik olsun
-      let pX = 100 + d3Data.currentV * scale;
+    function drawD3() {
+      let svg = document.getElementById('svg-d3');
+      if(!svg) return;
+      let scale = 600 / 12;
+      let pX = 100 + d3Data.V * scale;
       let eX = 100 + d3Data.engel * scale;
-      let isEngeleDayali = d3Data.currentV >= d3Data.engel;
       
-      let html = `
-        <rect x="100" y="40" width="550" height="120" fill="#f8fafc" stroke="#94a3b8" stroke-width="3" rx="4"/>
-        <rect x="100" y="40" width="${d3Data.currentV * scale}" height="120" fill="#3b82f6" opacity="0.08"/>
-      `;
+      let html = `<rect x="100" y="50" width="600" height="150" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>`;
+      html += `<rect x="100" y="50" width="${d3Data.V*scale}" height="150" fill="#bfdbfe" opacity="0.4"/>`;
       
       // Tanecikler
-      let pCount = Math.min(30, Math.round(d3Data.n * 15));
+      let pCount = Math.min(25, Math.round(d3Data.n * 12));
       for(let p=0; p<pCount; p++) {
-        let speed = 0.1 + (d3Data.T / 300) * 0.4;
-        let seed = p * 13 + animTick * speed;
-        let px = 100 + 10 + ((Math.sin(seed) * 0.5 + 0.5) * (d3Data.currentV * scale - 20));
-        let py = 40 + 10 + ((Math.cos(seed * 0.8) * 0.5 + 0.5) * 100);
-        html += `<circle cx="${px}" cy="${py}" r="4" fill="#1d4ed8" opacity="0.65"/>`;
+        let seed = p * 12.5 + tick * (0.1 + (d3Data.T/300)*0.3);
+        let px = 100 + 10 + ((Math.sin(seed) * 0.5 + 0.5) * (d3Data.V*scale - 20));
+        let py = 50 + 10 + ((Math.cos(seed * 0.7) * 0.5 + 0.5) * 130);
+        html += `<circle cx="${px}" cy="${py}" r="5" fill="#1e40af" opacity="0.7"/>`;
       }
       
-      // Engel Çizgisi
-      html += `<rect x="${eX - 3}" y="30" width="6" height="140" fill="#ef4444" rx="2"/>
-               <text x="${eX}" y="24" text-anchor="middle" fill="#ef4444" font-weight="800" font-size="10">ENGEL</text>`;
-               
-      // Hareketli Piston
-      html += `
-        <rect x="${pX - 5}" y="36" width="10" height="128" fill="#475569" rx="2"/>
-        <line x1="${pX}" y1="100" x2="720" y2="100" stroke="#94a3b8" stroke-width="2" stroke-dasharray="4,4"/>
-        <text x="730" y="104" fill="#64748b" font-weight="700" font-size="11">P_ortam: ${d3Data.p0.toFixed(2)} atm</text>
-      `;
+      // Engel ve Piston
+      html += `<rect x="${eX-3}" y="40" width="6" height="170" fill="#ef4444" rx="2"/>`;
+      html += `<rect x="${pX-6}" y="45" width="12" height="160" fill="#475569" rx="2"/>`;
       
-      // Sonuç Göstergeleri
-      html += `
-        <text x="${100 + (d3Data.currentV * scale)/2}" y="85" text-anchor="middle" fill="#1d4ed8" font-weight="900" font-size="15">${d3Data.currentP.toFixed(3)} atm</text>
-        <text x="${100 + (d3Data.currentV * scale)/2}" y="110" text-anchor="middle" fill="#0284c7" font-weight="700" font-size="13">${d3Data.currentV.toFixed(2)} L</text>
-        <text x="400" y="195" text-anchor="middle" fill="${isEngeleDayali?'#dc2626':'#16a34a'}" font-weight="800" font-size="13">${d3Data.durum}</text>
-      `;
+      // Değer Yazıları
+      html += `<text x="400" y="115" text-anchor="middle" font-size="16" font-weight="900" fill="#1e293b">${d3Data.P.toFixed(3)} atm</text>
+               <text x="400" y="140" text-anchor="middle" font-size="13" font-weight="700" fill="#0284c7">${d3Data.V.toFixed(2)} L</text>
+               <text x="400" y="235" text-anchor="middle" font-size="12" font-weight="800" fill="${d3Data.isIsochoric?'#dc2626':'#16a34a'}">
+                 ${d3Data.isIsochoric ? '🚧 Engel Devrede (Sabit Hacim / İzokor)' : '🟢 İdeal Piston Devrede (Sabit Basınç / İzobar)'}
+               </text>`;
+      svg.innerHTML = html;
+    }
+
+    // ══════════════════════ DÜZENEK 4 ══════════════════════
+    function toggleD4Valve(v) {
+      d4Valves[v] = !d4Valves[v];
+      document.getElementById('d4-'+v).classList.toggle('open', d4Valves[v]);
+      calcD4();
+    }
+    function resetD4() {
+      d4Caps = JSON.parse(JSON.stringify(d4InitData));
+      d4Valves = { m1:false, m2:false, m3:false };
+      document.querySelectorAll('#p-d4 .btn-valve').forEach(b=>b.classList.remove('open'));
+      calcD4();
+    }
+    function buildD4Cards() {
+      let html = '';
+      for(let i=0; i<3; i++) {
+        let c = d4Caps[i];
+        html += `<div class="card">
+          <div class="card-header"><span class="card-title">${i+1}. Balon</span></div>
+          <div class="slider-item">
+            <div class="slider-meta"><span class="slider-lbl">Miktar (n)</span><div class="slider-val-wrap"><input type="number" step="0.01" class="input-num" value="${c.n.toFixed(2)}" onchange="syncD4(${i},'n',this.value)"></div></div>
+            <input type="range" min="0" max="2" step="0.01" value="${c.n}" oninput="syncD4(${i},'n',this.value)">
+          </div>
+        </div>`;
+      }
+      document.getElementById('d4-cards').innerHTML = html;
+    }
+    function syncD4(i, f, v) {
+      d4Caps[i][f] = parseFloat(v);
+      calcD4();
+    }
+    function calcD4() {
+      let par = [0,1,2];
+      function find(x) { return par[x]===x ? x : par[x]=find(par[x]); }
+      function union(a,b) { par[find(a)] = find(b); }
+      
+      if(d4Valves.m1) union(0,1);
+      if(d4Valves.m2) union(1,2);
+      if(d4Valves.m3) union(0,2);
+      
+      let groups = {};
+      for(let i=0; i<3; i++) {
+        let r = find(i);
+        if(!groups[r]) groups[r] = { n:0, sumVT:0, idx:[] };
+        groups[r].n += d4Caps[i].n;
+        groups[r].sumVT += d4Caps[i].V / d4Caps[i].T;
+        groups[r].idx.push(i);
+      }
+      Object.values(groups).forEach(g => {
+        if(g.idx.length < 2) return;
+        let Peq = (g.n * R) / g.sumVT;
+        let gNames = g.idx.map(i=>d4InitData[i].gas).filter(n=>d4Caps[g.idx[0]].n>0);
+        let sharedGas = gNames.length===0?"Boş":gNames.every(n=>n===gNames[0])?gNames[0]:"Karışım";
+        g.idx.forEach(i => { d4Caps[i].gas = sharedGas; });
+      });
+      buildD4Cards();
+    }
+    function drawD4() {
+      let svg = document.getElementById('svg-d4');
+      if(!svg) return;
+      let html = '';
+      let B_POS = [{cx:120,cy:135},{cx:400,cy:135},{cx:260,cy:285}];
+      
+      // Hat Bağlantıları
+      html += `<line x1="120" y1="135" x2="400" y2="135" stroke="#cbd5e1" stroke-width="4"/>`;
+      html += `<line x1="400" y1="135" x2="260" y2="285" stroke="#cbd5e1" stroke-width="4"/>`;
+      html += `<line x1="120" y1="135" x2="260" y2="285" stroke="#cbd5e1" stroke-width="4"/>`;
+      
+      for(let i=0; i<3; i++) {
+        let c = d4Caps[i];
+        let P = c.V>0 ? (c.n*R*c.T)/c.V : 0;
+        let r = 40 + (c.n * 20);
+        let pObj = G_PRESETS.find(g=>g.label===c.gas) || {color:"#e2e8f0",bg:"#f8fafc"};
+        html += `<circle cx="${B_POS[i].cx}" cy="${B_POS[i].cy}" r="${r}" fill="${pObj.bg}" stroke="${pObj.color}" stroke-width="3"/>
+                 <text x="${B_POS[i].cx}" y="${B_POS[i].cy-5}" text-anchor="middle" font-weight="900" font-size="12" fill="${pObj.color}">${c.gas}</text>
+                 <text x="${B_POS[i].cx}" y="${B_POS[i].cy+10}" text-anchor="middle" font-size="10" fill="#475569">${P.toFixed(2)} atm</text>`;
+      }
+      
+      // Musluk Düğmeleri SVG Üstü
+      function drawV4(x,y,open,lbl) {
+        return `<circle cx="${x}" cy="${y}" r="13" fill="${open?'#22c55e':'#ef4444'}" stroke="white" stroke-width="2"/>
+                <text x="${x}" y="${y+3}" text-anchor="middle" font-size="9" font-weight="900" fill="white">${lbl}</text>`;
+      }
+      html += drawV4(260, 135, d4Valves.m1, "M1");
+      html += drawV4(330, 210, d4Valves.m2, "M2");
+      html += drawV4(190, 210, d4Valves.m3, "M3");
       
       svg.innerHTML = html;
     }
 
-    // ══════════════════════════════════════════════════════════════
-    // EĞİTİM LOGIC
-    // ══════════════════════════════════════════════════════════════
-    function renderEducation() {
-      const container = document.getElementById('edu-container');
-      const laws = [
-        { name: "Boyle Yasası", formula: "P₁·V₁ = P₂·V₂", cond: "n ve T sabit", color: "#f97316", steps: [{v:2, p:2.0}, {v:4, p:1.0}, {v:8, p:0.5}] },
-        { name: "Charles Yasası", formula: "V₁/T₁ = V₂/T₂", cond: "n ve P sabit", color: "#3b82f6", steps: [{t:200, v:3.0}, {t:400, v:6.0}, {t:800, v:12.0}] },
-        { name: "Gay-Lussac Yasası", formula: "P₁/T₁ = P₂/T₂", cond: "n ve V sabit", color: "#10b981", steps: [{t:200, p:0.8}, {t:400, p:1.6}, {t:800, p:3.2}] }
+    // ══════════════════════ EĞİTİM TABLOSU ══════════════════════
+    function drawEdu() {
+      let laws = [
+        { name:"Boyle Yasası", form:"P₁·V₁ = P₂·V₂", cond:"n, T sabit", desc:"Hacim azaldıkça birim yüzeye yapılan çarpma sayısı artacağından basınç ters orantılı yükselir." },
+        { name:"Charles Yasası", form:"V₁/T₁ = V₂/T₂", cond:"n, P sabit", desc:"Sıcaklık arttıkça kinetik enerjisi artan tanecikler kabın hacmini doğru orantılı genişletir." },
+        { name:"Gay-Lussac Yasası", form:"P₁/T₁ = P₂/T₂", cond:"n, V sabit", desc:"Sabit hacimli kapta sıcaklık artışı tanecik hızını ve dolayısıyla çeperlere yapılan basıncı artırır." }
       ];
-      
-      let html = '';
+      let html = '<table class="edu-table"><thead><tr><th>Yasa Adı</th><th>Formül</th><th>Koşul</th><th>Açıklama</th></tr></thead><tbody>';
       laws.forEach(l => {
-        html += `
-          <div class="card" style="flex:1 1 100%; margin-bottom:10px; borderLeft:4px solid ${l.color}">
-            <div class="card-title"><span style="color:${l.color}">${l.name}</span> <code style="background:#f1f5f9; padding:2px 6px; borderRadius:4px;">${l.formula}</code> <small style="color:var(--text-muted)">(${l.cond})</small></div>
-            <table class="law-table">
-              <thead>
-                <tr><th>Durum</th><th>Hacim (V)</th><th>Sıcaklık (T)</th><th>Basınç (P)</th></tr>
-              </thead>
-              <tbody>
-                ${l.steps.map((s, idx) => `
-                  <tr>
-                    <td>Değer ${idx+1}</td>
-                    <td style="color:#0284c7; font-weight:600;">${s.v ? s.v.toFixed(1)+' L' : 'Sabit'}</td>
-                    <td style="color:#ea580c; font-weight:600;">${s.t ? s.t+' K' : 'Sabit'}</td>
-                    <td style="color:#16a34a; font-weight:600;">${s.p ? s.p.toFixed(2)+' atm' : 'Sabit'}</td>
-                  </tr>
-                `).join('')}
-              </tbody>
-            </table>
-          </div>
-        `;
+        html += `<tr>
+          <td style="font-weight:800; color:var(--primary);">${l.name}</td>
+          <td><code style="background:#f1f5f9; padding:2px 6px; border-radius:4px;">${l.form}</code></td>
+          <td style="color:#eab308; font-weight:600;">${l.cond}</td>
+          <td style="color:#64748b;">${l.desc}</td>
+        </tr>`;
       });
-      container.innerHTML = html;
+      html += '</tbody></table>';
+      document.getElementById('edu-content').innerHTML = html;
     }
 
-    // İlk Çalıştırma
+    // İlk Çalıştırma Başlatıcıları
     buildD1Cards();
-    updateD1();
+    calcD1();
   </script>
 </body>
 </html>
